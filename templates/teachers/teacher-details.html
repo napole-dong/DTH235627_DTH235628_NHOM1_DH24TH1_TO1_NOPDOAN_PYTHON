@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from preschool.dreamguystech.com/html-template/teacher-details.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 28 Oct 2021 11:11:50 GMT -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+<title>Preskool - Teacher Details</title>
+
+<link rel="shortcut icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&amp;display=swap">
+
+<link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+<link rel="stylesheet" href="assets/plugins/datatables/datatables.min.css">
+
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="main-wrapper">
+
+<div class="header">
+
+<div class="header-left">
+<a href="index.html" class="logo">
+<img src="assets/img/logo.png" alt="Logo">
+</a>
+<a href="index.html" class="logo logo-small">
+<img src="assets/img/logo-small.png" alt="Logo" width="30" height="30">
+</a>
+</div>
+
+<a href="javascript:void(0);" id="toggle_btn">
+<i class="fas fa-align-left"></i>
+</a>
+
+<div class="top-nav-search">
+<form>
+<input type="text" class="form-control" placeholder="Search here">
+<button class="btn" type="submit"><i class="fas fa-search"></i></button>
+</form>
+</div>
+
+
+<a class="mobile_btn" id="mobile_btn">
+<i class="fas fa-bars"></i>
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block body %}
+<div class="page-wrapper">
+	<div class="content container-fluid">
+		<div class="page-header">
+			<div class="row">
+				<div class="col-sm-12">
+					<h3 class="page-title">Teacher Details</h3>
+					<ul class="breadcrumb">
+						<li class="breadcrumb-item"><a href="{% url 'teacher_list' %}">Teachers</a></li>
+						<li class="breadcrumb-item active">Teacher Details</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="about-info">
+							<h4>About Teacher</h4>
+							<div class="media mt-3">
+								{% if teacher.teacher_image %}
+									<img src="{{ teacher.teacher_image.url }}" class="mr-3" alt="{{ teacher.first_name }} {{ teacher.last_name }}">
+								{% else %}
+									<img src="{% static 'assets/img/profiles/avatar-01.jpg' %}" class="mr-3" alt="Profile avatar">
+								{% endif %}
+								<div class="media-body">
+									<ul>
+										<li>
+											<span class="title-span">Full Name : </span>
+											<span class="info-span">{{ teacher.first_name }} {{ teacher.last_name }}</span>
+										</li>
+										<li>
+											<span class="title-span">Teacher ID : </span>
+											<span class="info-span">{{ teacher.teacher_ID }}</span>
+										</li>
+										<li>
+											<span class="title-span">Department : </span>
+											<span class="info-span">{{ teacher.department }}</span>
+										</li>
+										<li>
+											<span class="title-span">Subject : </span>
+											<span class="info-span">{{ teacher.subject }}</span>
+										</li>
+										<li>
+											<span class="title-span">Mobile : </span>
+											<span class="info-span">{{ teacher.mobile_number }}</span>
+										</li>
+										<li>
+											<span class="title-span">Email : </span>
+											<span class="info-span">
+												{% if teacher.email %}
+													<a href="mailto:{{ teacher.email }}">{{ teacher.email }}</a>
+												{% else %}
+													<em>Not provided</em>
+												{% endif %}
+											</span>
+										</li>
+										<li>
+											<span class="title-span">Gender : </span>
+											<span class="info-span">{{ teacher.gender }}</span>
+										</li>
+										<li>
+											<span class="title-span">DOB : </span>
+											<span class="info-span">{{ teacher.date_of_birth|date:"d/m/Y" }}</span>
+										</li>
+										<li>
+											<span class="title-span">Joining Date : </span>
+											<span class="info-span">{{ teacher.joining_date|date:"d/m/Y" }}</span>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-12">
+									<h5>Permanent Address</h5>
+									<p>{{ teacher.permanent_address }}</p>
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-12">
+									<h5>Present Address</h5>
+									<p>{{ teacher.present_address }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
