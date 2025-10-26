@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 from django.contrib import messages
 # Create your views here.
@@ -68,10 +68,18 @@ def add_student(request):
     return render(request, "students/add-student.html")
 
 def student_list(request):
-    return render(request, "students/student.html")
+    student_list = Student.objects.select_related('parent').all()
+    context ={
+        'student_list' : student_list
+    }
+    return render(request, "students/student.html", context)
 
 def edit_student(request):
     return render(request, "students/edit-student.html")
 
-def view_student(request):
-    return render(request, "students/student-details.html")
+def view_student(request, slug):
+    student = get_object_or_404(Student, student_ID=slug)
+    context = {
+        'student': student
+    }
+    return render(request, "students/student-details.html", context)
