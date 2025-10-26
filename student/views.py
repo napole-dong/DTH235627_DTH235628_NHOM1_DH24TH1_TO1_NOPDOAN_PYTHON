@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.contrib import messages
 # Create your views here.
@@ -10,7 +11,7 @@ def add_student(request):
         student_ID = request.POST.get('student_ID')
         gender = request.POST.get('gender')
         date_of_birth = request.POST.get('date_of_birth')
-        address = request.POST.get('address')
+        student_class = request.POST.get('student_class')
         religion = request.POST.get('religion')
         joining_date = request.POST.get('joining_date')
         mobile_number = request.POST.get('mobile_number')
@@ -52,7 +53,7 @@ def add_student(request):
             student_ID=student_ID,
             gender=gender,
             date_of_birth=date_of_birth,
-            address=address,
+            student_class=student_class,
             religion=religion,
             joining_date=joining_date,
             mobile_number=mobile_number,
@@ -63,7 +64,7 @@ def add_student(request):
         )
         
         messages.success(request, "Student added successfully.")
-        return render(request, "student_list")
+        #return render(request, "student_list")
             
     return render(request, "students/add-student.html")
 
@@ -72,10 +73,59 @@ def student_list(request):
     context ={
         'student_list' : student_list
     }
-    return render(request, "students/student.html", context)
+    return render(request, "students/students.html", context)
 
-def edit_student(request):
-    return render(request, "students/edit-student.html")
+def edit_student(request, slug):
+    student = get_object_or_404(Student, slug=slug)
+    parent = student.parent if hasattr (student, 'parent') else None
+    if request.method == "POST":
+        # Process form data here
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')        
+        student_ID = request.POST.get('student_ID')
+        gender = request.POST.get('gender')
+        date_of_birth = request.POST.get('date_of_birth')
+        student_class = request.POST.get('student_class')
+        religion = request.POST.get('religion')
+        joining_date = request.POST.get('joining_date')
+        mobile_number = request.POST.get('mobile_number')
+        admission_number = request.POST.get('admission_number')
+        section = request.POST.get('section')
+        student_image = request.FILES.get('student_image')
+
+        #retrieve parent data from the form
+        parent.father_name = request.POST.get('father_name')
+        parent.father_occupation = request.POST.get('father_occupation')
+        parent.father_mobile = request.POST.get('father_mobile')
+        parent.father_email = request.POST.get('father_email')
+        
+        parent.mother_name = request.POST.get('mother_name')
+        parent.mother_occupation = request.POST.get('mother_occupation')
+        parent.mother_mobile = request.POST.get('mother_mobile')
+        parent.mother_email = request.POST.get('mother_email')
+
+        parent.present_address = request.POST.get('present_address')
+        parent.permanent_address = request.POST.get('permanent_address')
+        parent.save()
+        
+    
+        student.first_name=first_name,
+        student.last_name=last_name,
+        student.student_ID=student_ID,
+        student.gender=gender,
+        student.date_of_birth=date_of_birth,
+        student.student_class=student_class,
+        student.religion=religion,
+        student.joining_date=joining_date,
+        student.mobile_number=mobile_number,
+        student.admission_number=admission_number,
+        student.section=section,
+        student.student_image=student_image,
+        student.parent=parent
+        student.save()
+
+        return redirect("student_list")
+    return render(request, "students/edit-student.html",{'student': student, 'parent': parent})
 
 def view_student(request, slug):
     student = get_object_or_404(Student, student_ID=slug)
@@ -83,3 +133,12 @@ def view_student(request, slug):
         'student': student
     }
     return render(request, "students/student-details.html", context)
+
+def delete_student(request, slug):
+    if request.method == "POST":
+        student = get_object_or_404(Student, student_ID=slug)
+        student_name = f"{student.first_name} {student.last_name}"
+        student.delete()
+        
+        return redirect('student_list')
+    return HttpResponseForbidden()
